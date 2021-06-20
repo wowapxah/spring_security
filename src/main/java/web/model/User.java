@@ -16,27 +16,34 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private int id;
+    @Column(name = "Username", unique = true)
+    private String username;
     @Column(name = "Name")
     private String name;
     @Column(name = "LastName")
     private String lastName;
+    @Column(name = "Password")
+    private String password;
     @Column(name = "Age")
     private int age;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>(Collections.singletonList(new Role(2L, "ROLE_USER")));
+    private Set<Role> roles = new HashSet<>();
+    //private Set<Role> roles = new HashSet<>(Collections.singletonList(new Role(2L, "ROLE_USER")));
 
     public User() {
 
     }
 
-    public User(int id, String name, String lastName, int age) {
+    public User(int id, String name, String lastName, int age, String username, String password) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
         this.age = age;
+        this.username = username;
+        this.password = password;
     }
 
     public void setId(int id) {
@@ -71,6 +78,14 @@ public class User implements UserDetails {
         return age;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public String toString() {
         return name + " " + lastName + " " + age;
@@ -78,36 +93,36 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return roles;
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
