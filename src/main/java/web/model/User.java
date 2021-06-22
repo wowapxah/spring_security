@@ -31,7 +31,6 @@ public class User implements UserDetails {
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-    //private Set<Role> roles = new HashSet<>(Collections.singletonList(new Role(2L, "ROLE_USER")));
 
     public User() {
 
