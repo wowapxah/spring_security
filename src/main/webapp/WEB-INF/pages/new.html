@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<form th:method="POST" th:action="@{/users}" th:object="${user}">
+<form th:method="POST" th:action="@{/admin}" th:object="${user}">
   <label for="name">Name</label>
   <input name="name" th:field="*{name}" id="name"/>
   <br>
@@ -16,6 +16,12 @@
   <br>
   <label for="age">Age</label>
   <input name="age" th:field="*{age}" id="age"/>
+  <br>
+  <label for="username">Username</label>
+  <input name="username" th:field="*{username}" id="username"/>
+  <br>
+  <label for="password">Password</label>
+  <input name="password" th:field="*{password}" id="password"/>
   <br>
   <input type="submit" value="Add User"/>
 </form>

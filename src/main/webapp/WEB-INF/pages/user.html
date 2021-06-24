@@ -12,6 +12,8 @@
 <p th:text="${user.getName()}">Value</p>
 <p th:text="${user.getLastName()}">Value</p>
 <p th:text="${user.getAge()}">Value</p>
+<p th:text="${user.getUsername()}">Value</p>
+<p th:text="${user.getPassword()}">Value</p>
 
 <br>
 <a th:href="@{/admin/{id}/edit(id=${user.getId()})}">Edit</a>

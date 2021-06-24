@@ -3,35 +3,31 @@ package web.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import web.config.handler.LoginSuccessHandler;
-import web.service.UserDetailServiceImpl;
 
 @Configuration
 @EnableWebSecurity
+@ComponentScan("web")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private UserDetailsService userDetailService;
-    private LoginSuccessHandler loginSuccessHandler;
-
     @Autowired
-    public SecurityConfig(@Qualifier("userDetailServiceImpl") UserDetailsService userDetailsService,
-                          LoginSuccessHandler loginSuccessHandler) {
-        this.userDetailService = userDetailsService;
-        this.loginSuccessHandler = loginSuccessHandler;
-    }
+    private UserDetailsService userDetailsService;
+
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
+        auth.authenticationProvider(authenticationProvider());
     }
 
     @Override
@@ -44,8 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // указываем action с формы логина
                 .loginProcessingUrl("/login")
                 // Указываем параметры логина и пароля с формы логина
-                .usernameParameter("username")
-                .passwordParameter("password")
+                .usernameParameter("j_username")
+                .passwordParameter("j_password")
                 // даем доступ к форме логина всем
                 .permitAll();
 
@@ -55,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // указываем URL логаута
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 // указываем URL при удачном логауте
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessUrl("/login")
                 //выклчаем кроссдоменную секьюрность (на этапе обучения неважна)
                 .and().csrf().disable();
 
@@ -65,18 +61,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //страницы аутентификаци доступна всем
                 .antMatchers("/login").anonymous()
                 // защищенные URL
-                .antMatchers("/admin/**").access("hasAuthority('ADMIN')")
-                .antMatchers("/user/**").access("hasAuthority('USER')")
+                .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
+                .antMatchers("/user/**").hasAnyAuthority("USER")
                 .anyRequest().authenticated();
     }
 
-    @Autowired
-    public void setUserDetailsService(UserDetailsService userDetailsService) {
-        this.userDetailService = userDetailsService;
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 }
