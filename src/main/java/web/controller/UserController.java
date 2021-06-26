@@ -21,10 +21,4 @@ public class UserController {
         model.addAttribute("user", user);
         return "user";
     }
-
-    @GetMapping("/{id}")
-    public String getUser(@PathVariable("id") int id, ModelMap model) {
-        model.addAttribute("user", userService.getUser(id));
-        return "user";
-    }
 }

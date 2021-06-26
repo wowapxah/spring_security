@@ -202,6 +202,12 @@
       <version>5.2.0.RELEASE</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-taglibs</artifactId>
+      <version>5.2.2.RELEASE</version>
+    </dependency>
+
   </dependencies>
 
 

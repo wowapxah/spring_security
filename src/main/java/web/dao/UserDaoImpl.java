@@ -23,7 +23,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void addUser(User user) {
-        user.setPassword(passwordEncoder().encode(user.getPassword()));
         em.persist(user);
     }
 
@@ -55,9 +54,5 @@ public class UserDaoImpl implements UserDao {
     public User findByUsername(String username){
         return em.createQuery("select u from User u where u.name = :name", User.class)
                 .setParameter("name",username).getSingleResult();
-    }
-
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

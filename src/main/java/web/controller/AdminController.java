@@ -1,21 +1,25 @@
 package web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import web.model.Role;
 import web.model.User;
 import web.service.UserService;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    private final UserService userService;
 
     @Autowired
-    public AdminController(UserService userService) {
-        this.userService = userService;
-    }
+    private UserService userService;
 
     @GetMapping()
     public String getUsers(ModelMap model) {
@@ -36,6 +40,10 @@ public class AdminController {
 
     @PostMapping()
     public String addUser(@ModelAttribute("user") User user) {
+        Role role = new Role(2L, "USER");
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        user.setRoles(roles);
         userService.addUser(user);
         return "redirect:/admin";
     }
