@@ -23,6 +23,12 @@
   <label for="password">Password</label>
   <input name="password" th:field="*{password}" id="password"/>
   <br>
+  <label for="role">Role</label>
+  <select name="my_role" id="role">
+    <option>USER</option>
+    <option>ADMIN</option>
+  </select>
+  <br>
   <input type="submit" value="Add User"/>
 </form>
 
