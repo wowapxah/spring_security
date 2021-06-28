@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://springframework.org/security/tags">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,12 +17,16 @@
 <p th:text="${user.getPassword()}">Value</p>
 
 <br>
+<a th:href="@{/logout}">Logout</a>
+
+<div sec:authorize="hasRole('ADMIN')">
+<br>
 <a th:href="@{/admin/{id}/edit(id=${user.getId()})}">Edit</a>
 
 <form th:method="DELETE" th:action="@{/admin/{id}(id=${user.getId()})}">
     <input type="submit" value="Delete"/>
 </form>
-
+</div>
 
 </body>
 </html>

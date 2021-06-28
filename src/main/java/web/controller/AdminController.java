@@ -39,8 +39,8 @@ public class AdminController {
     }
 
     @PostMapping()
-    public String addUser(@ModelAttribute("user") User user) {
-        Role role = new Role(2L, "USER");
+    public String addUser(@ModelAttribute("user") User user, @ModelAttribute("my_role") String my_role) {
+        Role role = new Role((my_role.equals("ADMIN") ? 1L : 2L), my_role);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
         user.setRoles(roles);
